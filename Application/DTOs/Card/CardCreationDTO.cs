@@ -1,7 +1,7 @@
 
 namespace ToDoApplication.Application.DTOs;
 
-public class CardCreationDTO:BaseDTO
+public class CardCreationDTO:BaseCreationDTO
 {
     public string title { get ; set; }
     public string color { get; set; } =  "#ffffff";
