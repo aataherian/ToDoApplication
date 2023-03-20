@@ -1,14 +1,13 @@
-using System.Linq.Expressions;
+
 using ToDoApplication.Application.DTOs;
 namespace ToDoApplication.Application.Interfaces.Repositories;
 
 public interface IBaseRepository<TEntity>
 {
-    public TEntity Create(TEntity entity);
-    public void Update(TEntity entity);
+    public void Create(TEntity entity);
     public void DeleteById(long id);
+    public void Update(TEntity entity);
     public Task<TEntity> FindById(long id);
-    public Task<IQueryable<TEntity>> FindByCondition(BaseFilterDTO conditions, BaseOrderDTO order);
-    public Task<IQueryable<TEntity>> All();
-        
+    public Task<IEnumerable<TEntity>> All();
+    public abstract Task<IEnumerable<TEntity>> FindByConditions(BaseFilterDTO conditions, BaseOrderDTO order);
 }
