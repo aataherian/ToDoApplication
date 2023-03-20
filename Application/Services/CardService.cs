@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq.Expressions;
-
 using AutoMapper;
 
 using ToDoApplication.Core.Entities;
@@ -24,12 +21,13 @@ public class CardServices : ICardService
 
 
 
-	public CardDTO Create(CardCreationDTO entity)
+	public async Task<CardDTO> Create(CardCreationDTO entity)
 	{
 		var card = mapper.Map<CardCreationDTO, Card>(entity);
-		card = _db.cardRepository.Create(card);
+		_db.cardRepository.Create(card);
 
-		if (_db.Save() > 0)
+		int result = await _db.SaveAsync() ;
+		if (result > 0)
 			return mapper.Map<CardDTO>(card);
 		return null;
 	}
@@ -38,32 +36,33 @@ public class CardServices : ICardService
 
 
 
-	public int DeleteById(long id)
+	public async  Task<int> DeleteById(long id)
 	{
 		_db.cardRepository.DeleteById(id);
-		 int result = _db.Save();
+		 int result = await _db.SaveAsync();
 		 return result > 0 ? result : 0 ;
 	}
 
 
 
 
-	public async Task<IQueryable<CardDTO>> All()
+	public async Task<IList<CardDTO>> All()
 	{
 		var result = await  _db.cardRepository.All();
-		return mapper.ProjectTo<CardDTO>(result);
+		
+		return mapper.Map<IList<CardDTO>>(result);
 	}
 
 
 
 
 
-	public async Task<IQueryable<CardDTO>> FindByConditions(CardFilterDTO filter,CardOrderDTO order)
+	public async Task<IList<CardDTO>> FindByConditions(CardFilterDTO filter,CardOrderDTO order)
 		//Expression<Func<CardDTO, bool>> conditions)
 	{
 
-		var result =await _db.cardRepository.FindByCondition(filter, order);
-		return mapper.ProjectTo<CardDTO>(result);
+		var result =await _db.cardRepository.FindByConditions(filter, order);
+		return mapper.Map<IList<CardDTO>>(result);
 		
 	}
 
@@ -81,16 +80,16 @@ public class CardServices : ICardService
 
 
 
-	public int Update(CardDTO entity)
+	public async Task<int> Update(CardDTO entity)
 	{
 		
-		var result = _db.cardRepository.FindById(entity.id);
+		var result = await _db.cardRepository.FindById(entity.id);
 		if(result == null)
 			throw new KeyNotFoundException("Not Found");
 
 		var e = mapper.Map<Card>(entity);
 		_db.cardRepository.Update(e);
-		return _db.Save();
+		return await _db.SaveAsync();
 		//TODO: if ==0 throw exception
 	}
 }
