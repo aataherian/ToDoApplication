@@ -1,8 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
+using FluentValidation;
 
-using ToDoApplication.Application.DTOs;
 using ToDoApplication.Core.Entities;
+using ToDoApplication.Application.DTOs;
+using ToDoApplication.Application.Valitaors;
+
 
 namespace ToDoApplication.Application;
 
@@ -18,6 +21,7 @@ public static class Dependency{
             }
         );
         var mapper = mapperConfig.CreateMapper();
+
         return;
     }
 
